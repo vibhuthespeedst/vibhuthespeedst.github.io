@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vibhu Mishra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Vibhu Mishra, data engineer, backend developer and active open source contributor in Bengaluru, India.">
+<meta property="og:title" content="Vibhu Mishra">
+<meta property="og:description" content="Data engineer, backend developer and active open source contributor. Pipelines on Azure Databricks, Fabric and SQL Server, and the services around them.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2313222B'/%3E%3Cpath d='M9 16h14' stroke='%2393A6AA' stroke-width='2'/%3E%3Crect x='4' y='12' width='8' height='8' rx='1.5' fill='%235BC58C'/%3E%3Crect x='20' y='12' width='8' height='8' rx='1.5' fill='%23E7B247'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: left-aligned column, max 1120px. Two dark "console" bands bookend the page (career run, contact).
+   Every piece of technical evidence sits on the same console surface: the career run, pipeline lineage,
+   a request log and an ERD. */
+:root {
+  --paper: #F1F4F2;
+  --panel: #FBFCFB;
+  --ink: #15242B;
+  --muted: #56676D;
+  --line: #C6D0CC;
+  --accent: #2148C9;
+  --on-accent: #FFFFFF;
+  --ok: #1D7044;
+  --run: #8F5D00;
+
+  --console: #13222B;
+  --console-raised: #1A2E39;
+  --console-ink: #E2EAE8;
+  --console-muted: #97AAAE;
+  --console-line: #2D4552;
+  --c-ok: #5BC58C;
+  --c-run: #E7B247;
+  --c-accent: #8AA8FF;
+  --bronze: #CD8A4E;
+  --silver: #BCC7CC;
+  --gold: #E3B53F;
+
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.625rem, 3.2vw, 2.375rem);
+  --step-3: clamp(2.25rem, 5.5vw, 3.75rem);
+  --step-4: clamp(3.5rem, 12vw, 6rem);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0C1417;
+    --panel: #132027;
+    --ink: #E2EAE8;
+    --muted: #94A5A7;
+    --line: #263840;
+    --accent: #8AA8FF;
+    --on-accent: #0C1417;
+    --ok: #5BC58C;
+    --run: #E7B247;
+    --console: #111E25;
+    --console-raised: #182A33;
+    --console-line: #2A3F4A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0C1417;
+  --panel: #132027;
+  --ink: #E2EAE8;
+  --muted: #94A5A7;
+  --line: #263840;
+  --accent: #8AA8FF;
+  --on-accent: #0C1417;
+  --ok: #5BC58C;
+  --run: #E7B247;
+  --console: #111E25;
+  --console-raised: #182A33;
+  --console-line: #2A3F4A;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scrollbar-color: var(--line) var(--paper); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  caret-color: var(--accent);
+  font-family: var(--body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent); color: var(--on-accent); }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p, ul, ol, dl, dd, figure { margin: 0; }
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+code { font-family: var(--mono); font-size: 0.9em; }
+.nw { white-space: nowrap; }
+
+.wrap {
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Top bar */
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px 24px; flex-wrap: wrap; padding-block: 22px; }
+.top .me { font-weight: 650; color: var(--ink); text-decoration: none; }
+.top nav { display: flex; gap: 4px 22px; flex-wrap: wrap; font-size: 0.9375rem; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero { display: grid; gap: clamp(26px, 4vw, 40px); padding-block: clamp(36px, 7vw, 96px) clamp(40px, 6vw, 72px); }
+.name {
+  font-family: var(--display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: var(--step-4);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.hero-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 26px 64px; align-items: start;
+  padding-top: clamp(22px, 3vw, 30px); border-top: 1px solid var(--line);
+}
+.roles {
+  list-style: none; padding: 0; display: grid; gap: 4px;
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 650;
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+.hero-side { display: grid; gap: 22px; }
+.intro { max-width: 52ch; color: var(--muted); font-size: 1.125rem; line-height: 1.6; }
+.intro strong { color: var(--ink); font-weight: 600; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px;
+  border: 1.5px solid var(--ink); border-radius: 4px;
+  color: var(--ink); background: transparent; text-decoration: none; font-weight: 600; font-size: 0.9375rem;
+  transition: background-color 160ms ease-out, color 160ms ease-out;
+}
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+/* Console surface, shared by the bands and every evidence panel */
+.band, .console {
+  background-color: var(--console);
+  background-image: radial-gradient(var(--console-line) 1px, transparent 1.3px);
+  background-size: 20px 20px;
+  color: var(--console-ink);
+}
+.band { padding-block: clamp(28px, 5vw, 52px); border-block: 1px solid var(--console-line); }
+
+/* Career run */
+.run-head {
+  display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 20px;
+  font-family: var(--mono); font-size: var(--step--1); color: var(--console-muted);
+  margin-bottom: 22px;
+}
+.run-title { font-family: var(--mono); color: var(--console-ink); font-weight: 500; font-size: 0.9375rem; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.run-head .tally { display: flex; gap: 16px; }
+.dag { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 72px; }
+.task {
+  position: relative;
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--console-raised);
+  border: 1.5px solid var(--console-line);
+  border-radius: 5px;
+  padding: 16px 18px 18px;
+}
+.task.ok { border-color: var(--c-ok); }
+.task.running { border-color: var(--c-run); }
+.task .tid { font-family: var(--mono); font-size: var(--step--1); color: var(--console-muted); overflow-wrap: anywhere; }
+.task h3 { font-size: 1.125rem; font-weight: 650; line-height: 1.3; }
+.task .when { font-size: 0.875rem; color: var(--console-muted); font-variant-numeric: tabular-nums; }
+.task ul { padding-left: 1.1em; font-size: 0.9375rem; line-height: 1.5; display: grid; gap: 5px; margin-top: 6px; }
+.task li::marker { color: var(--console-muted); }
+.task .state { margin-top: auto; padding-top: 10px; }
+.task + .task::before {
+  content: ""; position: absolute; top: 34px; left: -73px; width: 70px;
+  border-top: 1.5px solid var(--console-muted);
+}
+.task + .task::after {
+  content: ""; position: absolute; top: 29px; left: -12px;
+  border-left: 9px solid var(--console-muted); border-top: 5.5px solid transparent; border-bottom: 5.5px solid transparent;
+}
+.packet {
+  position: absolute; top: 31px; left: -70px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c-ok);
+  animation: packet-x 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.task:last-child .packet { animation-delay: 1.4s; }
+@keyframes packet-x {
+  0% { transform: translateX(0); opacity: 0; }
+  10%, 75% { opacity: 1; }
+  100% { transform: translateX(52px); opacity: 0; }
+}
+@keyframes packet-y {
+  0% { transform: translateY(0); opacity: 0; }
+  10%, 75% { opacity: 1; }
+  100% { transform: translateY(34px); opacity: 0; }
+}
+
+.state {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: var(--step--1); font-weight: 500;
+}
+.state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.state.ok { color: var(--ok); }
+.state.running { color: var(--run); }
+.band .state.ok, .console .state.ok { color: var(--c-ok); }
+.band .state.running, .console .state.running { color: var(--c-run); }
+.task .state.running::before { animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Sections */
+.section { padding-block: clamp(64px, 10vw, 120px) clamp(24px, 4vw, 48px); }
+.section-head { display: grid; gap: 12px; margin-bottom: clamp(24px, 4vw, 40px); }
+.section-head h2 {
+  font-family: var(--display); font-stretch: 125%; font-weight: 800;
+  font-size: var(--step-3); line-height: 1; letter-spacing: -0.025em;
+}
+.section-head p { color: var(--muted); max-width: 58ch; font-size: 1.125rem; }
+
+/* Projects */
+.project { display: grid; gap: 22px; padding-block: clamp(32px, 5vw, 52px); border-top: 1px solid var(--line); }
+.p-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px 32px; }
+.p-head h3 { font-family: var(--display); font-stretch: 112%; font-weight: 750; font-size: var(--step-2); line-height: 1.05; letter-spacing: -0.015em; }
+.p-head .what { color: var(--muted); font-size: var(--step-1); margin-top: 6px; }
+.p-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; font-size: 0.9375rem; color: var(--muted); }
+.lede { font-size: var(--step-1); line-height: 1.5; max-width: 62ch; }
+.p-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 28px 44px; align-items: start; }
+.facts { padding-left: 1.1em; display: grid; gap: 10px; }
+.facts li::marker { color: var(--muted); }
+.stack { margin-top: 18px; font-size: 0.9375rem; color: var(--muted); }
+.stack b { color: var(--ink); font-weight: 600; }
+
+.console {
+  border: 1px solid var(--console-line);
+  border-radius: 6px;
+  padding: 18px 20px 20px;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  line-height: 1.55;
+  overflow-x: auto;
+  min-width: 0;
+}
+.console figcaption {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px;
+  font-family: var(--body); font-size: var(--step--1); color: var(--console-muted);
+  margin-bottom: 16px;
+}
+.console figcaption b { color: var(--console-ink); font-weight: 600; }
+.chip {
+  display: inline-block; padding: 1px 7px; margin: 0 4px 5px 0;
+  border: 1px solid var(--console-line); border-radius: 3px; background: var(--console-raised);
+  color: var(--console-ink); white-space: nowrap;
+}
+.chip.warn { border-color: color-mix(in srgb, var(--c-run) 55%, var(--console-line)); color: var(--c-run); }
+
+/* Lineage: a vertical pipeline of layers */
+.lineage { list-style: none; padding: 0; display: grid; }
+.lineage > li {
+  position: relative;
+  display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 4px 14px;
+  padding: 0 0 18px 24px;
+}
+.lineage > li:last-child { padding-bottom: 0; }
+.lineage > li::before {
+  content: ""; position: absolute; left: 0; top: 4px; width: 11px; height: 11px; border-radius: 50%;
+  background: var(--l, var(--c-accent));
+}
+.lineage > li:not(:last-child)::after {
+  content: ""; position: absolute; left: 5px; top: 19px; bottom: 3px; border-left: 1.5px solid var(--console-line);
+}
+.lineage .src::before { background: transparent; border: 2px solid var(--c-accent); }
+.lineage .bronze { --l: var(--bronze); }
+.lineage .silver { --l: var(--silver); }
+.lineage .gold { --l: var(--gold); }
+.layer { display: grid; align-content: start; font-family: var(--body); }
+.layer b { color: var(--console-ink); font-weight: 650; font-size: 0.9375rem; line-height: 1.3; }
+.layer span { font-family: var(--mono); color: var(--console-muted); font-size: 0.75rem; }
+.lineage .note { color: var(--console-muted); font-family: var(--body); }
+.lineage .branch { display: block; margin-top: 4px; color: var(--console-muted); font-family: var(--body); }
+
+/* Request log */
+.log { list-style: none; padding: 0; display: grid; }
+.log li {
+  display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 2px 12px; align-items: baseline;
+  padding-block: 10px; border-top: 1px solid var(--console-line);
+}
+.log li:first-child { border-top: 0; padding-top: 0; }
+.log .m { color: var(--c-accent); font-weight: 500; }
+.log .p { color: var(--console-ink); }
+.log .b { grid-column: 2 / 3; color: var(--console-muted); overflow-wrap: anywhere; }
+.log .s { grid-column: 3; grid-row: 1; white-space: nowrap; font-weight: 500; }
+.log .s.ok { color: var(--c-ok); }
+.log .s.warn { color: var(--c-run); }
+
+/* ERD */
+.erd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tbl { border: 1px solid var(--console-line); border-radius: 4px; background: var(--console-raised); min-width: 0; }
+.tbl-name { padding: 7px 10px; border-bottom: 1px solid var(--console-line); font-family: var(--body); font-weight: 650; color: var(--console-ink); }
+.tbl ul { list-style: none; padding: 8px 10px 10px; display: grid; gap: 2px; }
+.tbl li { display: flex; justify-content: space-between; gap: 8px; color: var(--console-ink); }
+.tbl li em { font-style: normal; color: var(--console-muted); white-space: nowrap; }
+.tbl li em.fk { color: var(--c-accent); }
+
+/* Skills */
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 64px; }
+.skills h3 { font-family: var(--display); font-stretch: 112%; font-weight: 750; font-size: 1.5rem; margin-bottom: 16px; }
+.skills dl { display: grid; }
+.skills dl > div {
+  display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 2px 16px; align-items: baseline;
+  padding-block: 12px; border-top: 1px solid var(--line);
+}
+.skills dl > div:last-child { border-bottom: 1px solid var(--line); }
+.skills dt { color: var(--muted); font-size: 0.9375rem; }
+
+/* Contact band */
+.contact { margin-top: clamp(64px, 10vw, 120px); padding-block: clamp(48px, 8vw, 96px); }
+.contact .wrap { display: grid; gap: 24px; }
+.contact h2 { font-family: var(--display); font-stretch: 125%; font-weight: 800; font-size: var(--step-3); line-height: 1; letter-spacing: -0.025em; }
+.contact p { max-width: 56ch; font-size: var(--step-1); color: var(--console-muted); }
+.email { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+.email span {
+  font-family: var(--display); font-stretch: 112%; font-weight: 700;
+  font-size: clamp(1.5rem, 5.2vw, 3.25rem); letter-spacing: -0.015em; line-height: 1.1;
+  user-select: all; overflow-wrap: anywhere;
+}
+.email button {
+  min-height: 44px; padding: 0 16px; border-radius: 4px; cursor: pointer;
+  border: 1.5px solid var(--console-line); background: var(--console-raised); color: var(--console-ink);
+  font: 600 0.9375rem var(--body);
+  transition: border-color 160ms ease-out;
+}
+.email button:hover { border-color: var(--console-ink); }
+.contact a { color: var(--c-accent); }
+.contact ::selection, .band ::selection { background: var(--c-accent); color: var(--console); }
+.contact a:focus-visible, .contact button:focus-visible { outline-color: var(--c-accent); }
+.elsewhere { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 1.0625rem; }
+
+footer { padding-block: 24px 40px; color: var(--muted); font-size: 0.875rem; }
+
+@media (max-width: 900px) {
+  .hero-row { grid-template-columns: minmax(0, 1fr); }
+  .p-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .dag { grid-template-columns: minmax(0, 1fr); gap: 52px; }
+  .task + .task::before { top: -53px; left: 32px; width: 0; height: 50px; border-top: 0; border-left: 1.5px solid var(--console-muted); }
+  .task + .task::after { top: -12px; left: 27.25px; border-left: 5.5px solid transparent; border-right: 5.5px solid transparent; border-top: 9px solid var(--console-muted); border-bottom: 0; }
+  .packet { top: -50px; left: 29.25px; animation-name: packet-y; }
+  .skills { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .lineage > li { grid-template-columns: minmax(0, 1fr); }
+  .erd { grid-template-columns: minmax(0, 1fr); }
+  .log li { grid-template-columns: 3.4rem minmax(0, 1fr); }
+  .log .s { grid-column: 2; grid-row: auto; }
+  .skills dl > div { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .packet { display: none; }
+  .task .state.running::before { animation: none; }
+  .btn, .email button { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="top wrap">
+  <a class="me" href="#">Vibhu Mishra</a>
+  <nav aria-label="Sections">
+    <a href="#pipelines">Pipelines</a>
+    <a href="#backend">Backend</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero wrap" aria-labelledby="name">
+    <h1 class="name" id="name">Vibhu Mishra</h1>
+    <div class="hero-row">
+    <ul class="roles">
+      <li>Data engineer</li>
+      <li>Backend developer</li>
+      <li>Active open source contributor</li>
+    </ul>
+    <div class="hero-side">
+      <p class="intro">I build data pipelines and the services that sit on top of them. At <strong>314e Corporation</strong> I load and clean SQL Server data with SSIS and T-SQL, and I'm moving that ETL to Microsoft Fabric. Before that I built PySpark pipelines on Azure Databricks at <strong>Sigmoid</strong>. Based in Bengaluru, open to remote work.</p>
+      <div class="actions">
+        <a class="btn primary" href="mailto:vibhucr07@gmail.com">Email me</a>
+        <a class="btn" href="https://github.com/vibhuthespeedst">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/vibhu-mishra-61a261264">LinkedIn</a>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="career-h">
+    <div class="wrap">
+      <div class="run-head">
+        <h2 id="career-h" class="run-title"><span class="sr">Career so far, drawn as a pipeline run: </span>career_pipeline</h2>
+        <span class="tally"><span class="state ok">2 success</span><span class="state running">1 running</span></span>
+      </div>
+      <ol class="dag">
+        <li class="task ok">
+          <span class="tid">btech_iiit_surat</span>
+          <h3>B.Tech, IIIT Surat</h3>
+          <p class="when">Nov 2022 – Jul 2026</p>
+          <ul>
+            <li>LeetCode 1809, CodeChef 3★, Codeforces Pupil</li>
+            <li>500+ problems solved</li>
+            <li>Represented IIIT Surat in football at the Inter-IIIT Sports Meet twice <span class="nw">(2024–2025)</span></li>
+          </ul>
+          <span class="state ok">success</span>
+        </li>
+        <li class="task ok">
+          <span class="packet" aria-hidden="true"></span>
+          <span class="tid">intern_sigmoid</span>
+          <h3>Data Engineer Intern, Sigmoid</h3>
+          <p class="when">Jan 2026 – Jul 2026</p>
+          <ul>
+            <li>PySpark ETL on Azure Databricks, Bronze, Silver and Gold layers on ADLS Gen2</li>
+            <li>Scheduling and deploys with ADF, Airflow and GitHub Actions</li>
+            <li>FastAPI and Flask data APIs for analytics teams</li>
+          </ul>
+          <span class="state ok">success</span>
+        </li>
+        <li class="task running">
+          <span class="packet" aria-hidden="true"></span>
+          <span class="tid">data_engineer_314e</span>
+          <h3>Data Engineer, 314e Corporation</h3>
+          <p class="when">Aug 2026 – now</p>
+          <ul>
+            <li>Incremental loads from SQL Server and flat files with SSIS</li>
+            <li>T-SQL procedures and views, tuned with execution plans and indexes</li>
+            <li>Moving SSIS ETL to Fabric pipelines and Lakehouse tables</li>
+          </ul>
+          <span class="state running">running</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="pipelines" aria-labelledby="pipelines-h">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="pipelines-h">Data pipelines</h2>
+        <p>Batch pipelines that pull data from public sources, model it, and check it before anyone queries it.</p>
+      </header>
+
+      <article class="project" id="crypto-pipeline" aria-labelledby="p-crypto">
+        <div class="p-head">
+          <div>
+            <h3 id="p-crypto">Crypto Market Data Pipeline</h3>
+            <p class="what">Medallion lakehouse on Databricks</p>
+          </div>
+          <p class="p-meta">
+            <span>Team project, 2026</span>
+            <a href="https://github.com/vibhuthespeedst/Crypto-Market-Data-Pipeline">Source on GitHub</a>
+          </p>
+        </div>
+        <p class="lede">Loads live and historical market data for the top 20 coins from the CoinGecko API into Delta Lake, and models it into tables a trading dashboard reads.</p>
+        <div class="p-grid">
+          <figure class="console">
+            <figcaption><b>Lineage</b><span>Delta tables by layer</span></figcaption>
+            <ol class="lineage">
+              <li class="src">
+                <div class="layer"><b>CoinGecko API</b><span>source</span></div>
+                <div class="note">Markets, plus 30 days of 4-hour OHLC candles</div>
+              </li>
+              <li class="bronze">
+                <div class="layer"><b>Bronze</b><span>raw, merged</span></div>
+                <div><span class="chip">bronze_market_data</span><span class="chip">bronze_ohlc_data</span></div>
+              </li>
+              <li class="silver">
+                <div class="layer"><b>Silver</b><span>star schema</span></div>
+                <div>
+                  <span class="chip">dim_coin</span><span class="chip">dim_date</span><span class="chip">silver_market_metrics</span><span class="chip">silver_ohlc_metrics</span>
+                  <span class="branch">Rows that fail checks go to <span class="chip warn">silver_market_quarantine</span></span>
+                </div>
+              </li>
+              <li class="gold">
+                <div class="layer"><b>Gold</b><span>trader views</span></div>
+                <div><span class="chip">gold_market_snapshot</span><span class="chip">gold_ohlc_history</span><span class="chip">gold_performance_metrics</span><span class="chip">gold_market_summary</span></div>
+              </li>
+            </ol>
+          </figure>
+          <div>
+            <ul class="facts">
+              <li>Ingestion retries with exponential backoff and stays inside CoinGecko's rate limit.</li>
+              <li>Loads use Delta <code>MERGE</code>, so re-running a batch doesn't duplicate rows.</li>
+              <li>Silver separates dimensions from facts. Rows that fail quality checks are quarantined instead of dropped, and every run is logged with its status and row counts.</li>
+              <li>Gold adds support and resistance levels, performance metrics and a recommendation score for a Databricks Lakeview dashboard.</li>
+            </ul>
+            <p class="stack"><b>Stack:</b> PySpark, Databricks, Delta Lake, Python, CoinGecko API</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="project" id="interop-mapper" aria-labelledby="p-interop">
+        <div class="p-head">
+          <div>
+            <h3 id="p-interop">Interop Mapper</h3>
+            <p class="what">ETL and search for the FHIR health data standard</p>
+          </div>
+          <p class="p-meta">
+            <span>Solo project, 2026</span>
+            <a href="https://github.com/vibhuthespeedst/interop-assistant">Source on GitHub</a>
+          </p>
+        </div>
+        <p class="lede">FHIR is the HL7 standard that health systems use to exchange records. Type a field like “date of birth” and Interop Mapper shows where it goes (<code>Patient.birthDate</code>) and how it changed between FHIR R4, R4B and R5, with no internet needed once loaded.</p>
+        <div class="p-grid">
+          <figure class="console">
+            <figcaption><b>Lineage</b><span>build steps, in order</span></figcaption>
+            <ol class="lineage">
+              <li class="src">
+                <div class="layer"><b>HL7 registry</b><span>fetch_packages.py</span></div>
+                <div class="note">R4, R4B and R5 core, plus the Extensions Pack</div>
+              </li>
+              <li>
+                <div class="layer"><b>SQLite + FTS5</b><span>build_index.py</span></div>
+                <div><span class="chip">24,754 elements</span><span class="chip">2,196 extensions</span><span class="chip">4,081 search params</span></div>
+              </li>
+              <li>
+                <div class="layer"><b>Static export</b><span>export_web.py</span></div>
+                <div class="note">JSON per version, and R4 to R4B to R5 diffs computed element by element</div>
+              </li>
+              <li>
+                <div class="layer"><b>Offline app</b><span>web/</span></div>
+                <div><span class="chip">10,486 examples validated</span><span class="chip">one 5 MB HTML file</span></div>
+              </li>
+            </ol>
+          </figure>
+          <div>
+            <ul class="facts">
+              <li>A Python ETL pulls the official HL7 packages and loads every element, extension and search parameter into SQLite with full-text search.</li>
+              <li>Version diffs cover added and removed fields, cardinality, type and binding changes, and flag likely renames.</li>
+              <li>Generates example JSON, Python, JavaScript and curl for every resource and field. All examples validate against the independent <code>fhir.resources</code> models.</li>
+              <li>Ships as static files: an installable offline app, or a single HTML file you can email.</li>
+            </ul>
+            <p class="stack"><b>Stack:</b> Python, SQLite FTS5, JavaScript, service workers</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="backend" aria-labelledby="backend-h">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="backend-h">Backend services</h2>
+        <p>APIs and server code, and the data models behind them.</p>
+      </header>
+
+      <article class="project" id="vibnex" aria-labelledby="p-vibnex">
+        <div class="p-head">
+          <div>
+            <h3 id="p-vibnex">Vibnex</h3>
+            <p class="what">URL shortener API</p>
+          </div>
+          <p class="p-meta">
+            <span>Solo project, 2025</span>
+            <a href="https://vibnex-539c.vercel.app/">Live site</a>
+            <a href="https://github.com/vibhuthespeedst/Vibnex">Source on GitHub</a>
+          </p>
+        </div>
+        <p class="lede">Paste a long link, pick a short code, and share the short one. Two route handlers do all the work: one creates links, one redirects.</p>
+        <div class="p-grid">
+          <figure class="console">
+            <figcaption><b>Request log</b><span>example requests</span></figcaption>
+            <ol class="log">
+              <li><span class="m">POST</span><span class="p">/api/create</span><span class="s ok">200 OK</span><span class="b">{"long": "github.com/vibhuthespeedst", "code": "gh"}</span></li>
+              <li><span class="m">POST</span><span class="p">/api/create</span><span class="s warn">409 Conflict</span><span class="b">{"long": "example.com", "code": "gh"}</span></li>
+              <li><span class="m">POST</span><span class="p">/api/create</span><span class="s warn">400 Bad Request</span><span class="b">{"long": "not a url", "code": "x"}</span></li>
+              <li><span class="m">GET</span><span class="p">/gh</span><span class="s ok">302 Found</span><span class="b">Location: https://github.com/vibhuthespeedst</span></li>
+              <li><span class="m">GET</span><span class="p">/nope</span><span class="s warn">404 Not Found</span></li>
+            </ol>
+          </figure>
+          <div>
+            <ul class="facts">
+              <li>The create route validates input, adds <code>https://</code> when the scheme is missing, and checks the short code is free before inserting.</li>
+              <li>The redirect route does a single lookup by short code and answers with a 302.</li>
+              <li>Moved storage from SQLite to Supabase PostgreSQL so it runs on Vercel's serverless functions.</li>
+            </ul>
+            <p class="stack"><b>Stack:</b> Next.js route handlers, Supabase (PostgreSQL), Vercel</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="project" id="fintrack" aria-labelledby="p-fintrack">
+        <div class="p-head">
+          <div>
+            <h3 id="p-fintrack">FinTrack</h3>
+            <p class="what">Personal finance backend and app</p>
+          </div>
+          <p class="p-meta">
+            <span>Team project, 2025</span>
+            <a href="https://github.com/vibhuthespeedst/Fintrack-Finance">Source on GitHub</a>
+          </p>
+        </div>
+        <p class="lede">Tracks spending across several accounts. Upload a bank statement PDF or a receipt, and its transactions are read, categorized and saved.</p>
+        <div class="p-grid">
+          <figure class="console">
+            <figcaption><b>Data model</b><span>Prisma, PostgreSQL</span></figcaption>
+            <div class="erd">
+              <div class="tbl">
+                <p class="tbl-name">User</p>
+                <ul>
+                  <li>id <em>pk</em></li>
+                  <li>clerkUserId <em>unique</em></li>
+                  <li>email <em>unique</em></li>
+                </ul>
+              </div>
+              <div class="tbl">
+                <p class="tbl-name">Account</p>
+                <ul>
+                  <li>userId <em class="fk">fk User</em></li>
+                  <li>type <em>enum</em></li>
+                  <li>balance <em>decimal</em></li>
+                  <li>isDefault <em>bool</em></li>
+                </ul>
+              </div>
+              <div class="tbl">
+                <p class="tbl-name">Transaction</p>
+                <ul>
+                  <li>accountId <em class="fk">fk Account</em></li>
+                  <li>userId <em class="fk">fk User</em></li>
+                  <li>amount <em>decimal</em></li>
+                  <li>category, date</li>
+                  <li>recurringInterval <em>enum</em></li>
+                </ul>
+              </div>
+              <div class="tbl">
+                <p class="tbl-name">Budget</p>
+                <ul>
+                  <li>userId <em class="fk">fk User, unique</em></li>
+                  <li>amount <em>decimal</em></li>
+                  <li>lastAlertSent <em>time</em></li>
+                </ul>
+              </div>
+            </div>
+          </figure>
+          <div>
+            <ul class="facts">
+              <li>Server actions validate input with Zod, then write the transaction and update the account balance in one Prisma <code>$transaction</code>, so balances can't drift from their rows.</li>
+              <li>Gemini reads uploaded statements and receipts and returns structured transactions, categorized from their descriptions.</li>
+              <li>Bulk delete reverses each transaction's effect on its account inside the same database transaction.</li>
+              <li>Filtered views export to <code>.xlsx</code>. Clerk handles sign-in.</li>
+            </ul>
+            <p class="stack"><b>Stack:</b> Next.js server actions, TypeScript, Prisma, PostgreSQL (Supabase), Zod, Gemini API, Clerk</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="skills" aria-labelledby="skills-h">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="skills-h">Skills</h2>
+      </header>
+      <div class="skills">
+        <div>
+          <h3>Data engineering</h3>
+          <dl>
+            <div><dt>Processing</dt><dd>PySpark, Spark SQL, T-SQL, Pandas</dd></div>
+            <div><dt>Platforms</dt><dd>Azure Databricks, Delta Lake, Microsoft Fabric, Azure Synapse, Snowflake</dd></div>
+            <div><dt>Orchestration</dt><dd>Azure Data Factory, Apache Airflow, SSIS, Kafka</dd></div>
+            <div><dt>Modeling</dt><dd>Medallion layers, star schema, SCD Type 2</dd></div>
+            <div><dt>Data quality</dt><dd>PII masking, validation and reconciliation, lineage</dd></div>
+          </dl>
+        </div>
+        <div>
+          <h3>Backend</h3>
+          <dl>
+            <div><dt>Languages</dt><dd>Python, SQL, Go, Rust, TypeScript</dd></div>
+            <div><dt>Services</dt><dd>FastAPI, Flask, Next.js route handlers, REST APIs</dd></div>
+            <div><dt>Databases</dt><dd>SQL Server, PostgreSQL, SQLite, Prisma</dd></div>
+            <div><dt>Infrastructure</dt><dd>Docker, Kubernetes, Terraform, GitHub Actions, Azure, GCP</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band contact" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <h2 id="contact-h">Contact</h2>
+      <p>I'm looking for remote data engineering and backend work. Email is the quickest way to reach me.</p>
+      <div class="email">
+        <span id="email-text">vibhucr07@gmail.com</span>
+        <button type="button" id="copy-email">Copy email</button>
+      </div>
+      <ul class="elsewhere">
+        <li><a href="https://github.com/vibhuthespeedst">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/vibhu-mishra-61a261264">LinkedIn</a></li>
+        <li><a href="https://leetcode.com/vib_">LeetCode</a></li>
+        <li><a href="https://codeforces.com/profile/zeus75">Codeforces</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Vibhu Mishra, Bengaluru. Updated October 2026.</div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById("copy-email");
+    var text = document.getElementById("email-text");
+    function selectText() {
+      var range = document.createRange();
+      range.selectNodeContents(text);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      btn.textContent = "Press Ctrl+C to copy";
+    }
+    btn.addEventListener("click", function () {
+      try {
+        navigator.clipboard.writeText(text.textContent.trim()).then(function () {
+          btn.textContent = "Copied";
+          setTimeout(function () { btn.textContent = "Copy email"; }, 1800);
+        }, selectText);
+      } catch (e) {
+        selectText();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
