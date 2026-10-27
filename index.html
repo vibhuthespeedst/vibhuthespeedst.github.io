@@ -393,6 +393,7 @@ footer { padding-block: 24px 40px; color: var(--muted); font-size: 0.875rem; }
   <nav aria-label="Sections">
     <a href="#pipelines">Pipelines</a>
     <a href="#backend">Backend</a>
+    <a href="#llm-apps">LLM apps</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
@@ -670,6 +671,62 @@ footer { padding-block: 24px 40px; color: var(--muted); font-size: 0.875rem; }
               <li>Filtered views export to <code>.xlsx</code>. Clerk handles sign-in.</li>
             </ul>
             <p class="stack"><b>Stack:</b> Next.js server actions, TypeScript, Prisma, PostgreSQL (Supabase), Zod, Gemini API, Clerk</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="llm-apps" aria-labelledby="llm-h">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="llm-h">LLM apps</h2>
+        <p>LLMs on top of real data, with retrieval and tool calling so the answers stay grounded.</p>
+      </header>
+
+      <article class="project" id="datawiz" aria-labelledby="p-datawiz">
+        <div class="p-head">
+          <div>
+            <h3 id="p-datawiz">DataWiz</h3>
+            <p class="what">Chat with a CSV or Excel file</p>
+          </div>
+          <p class="p-meta">
+            <span>Solo project, 2025</span>
+            <a href="https://datawiz-kkttx4i4oy5w38jueeggo9.streamlit.app/">Live app</a>
+            <a href="https://github.com/vibhuthespeedst/DataWiz">Source on GitHub</a>
+          </p>
+        </div>
+        <p class="lede">Upload a table and ask questions about it in plain English. Answers are computed from the data, not guessed, and each one shows how it was worked out.</p>
+        <div class="p-grid">
+          <figure class="console">
+            <figcaption><b>One question</b><span>from question to answer</span></figcaption>
+            <ol class="lineage">
+              <li class="src">
+                <div class="layer"><b>Question</b><span>user</span></div>
+                <div class="note">“Which region has the highest total revenue?”</div>
+              </li>
+              <li>
+                <div class="layer"><b>Retrieve</b><span>TF-IDF</span></div>
+                <div><span class="chip">revenue profile</span><span class="chip">region profile</span><span class="chip">8 matching rows</span></div>
+              </li>
+              <li>
+                <div class="layer"><b>Tool call</b><span>pandas</span></div>
+                <div><span class="chip">aggregate: sum(revenue) by region</span></div>
+              </li>
+              <li>
+                <div class="layer"><b>Answer</b><span>Gemini</span></div>
+                <div class="note">Written from the tool result, with every step shown under it</div>
+              </li>
+            </ol>
+          </figure>
+          <div>
+            <ul class="facts">
+              <li>RAG: every column profile and row is indexed with TF-IDF, and each question pulls the most relevant ones into the prompt.</li>
+              <li>Gemini calls four pandas tools (aggregate, filter rows, value counts, correlation). The math runs in pandas, and nothing the model writes is run as code.</li>
+              <li>Also profiles the table, draws eight kinds of charts, and filters and exports rows.</li>
+              <li>Tested with a scripted stand-in for Gemini, so the tool-calling loop is checked without an API key.</li>
+            </ul>
+            <p class="stack"><b>Stack:</b> Python, LangChain, Gemini API, scikit-learn, pandas, Streamlit, Plotly</p>
           </div>
         </div>
       </article>
